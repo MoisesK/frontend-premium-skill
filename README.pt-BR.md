@@ -16,6 +16,7 @@ cada etapa**.
 |---|---|---|
 | 0. Classificar | Página pública, app/dashboard, redesign, mobile ou só revisão | — |
 | 1. Entender | Lê a stack; gera `DESIGN.md` a partir do código existente | `extract-design-md`, `site-md` |
+| 1b. Fundação | Só para projeto novo: stack, scaffold, estrutura, tokens do tema, cliente de API, app shell | `shadcn-ui`, `playwright-cli` |
 | 2. Direção de arte | Escolhe uma direção real em vez dos padrões do modelo | `design-taste-frontend`, `high-end-visual-design`, `minimalist-ui`, `industrial-brutalist-ui`, `gpt-taste`, `brandkit` |
 | 3. Construir | Componentes a partir dos tokens do tema, todos os estados, responsivo | `shadcn-ui`, `react-vite-dashboard`, `react-components` |
 | 4. Polir | Remove a "cara de feito por IA" | `redesign-existing-projects` |

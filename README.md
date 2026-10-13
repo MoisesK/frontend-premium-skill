@@ -15,6 +15,7 @@ to use at each step**.
 |---|---|---|
 | 0. Classify | Public page, app/dashboard, redesign, mobile or review-only | — |
 | 1. Understand | Read the stack; generate `DESIGN.md` from existing code | `extract-design-md`, `site-md` |
+| 1b. Foundation | Greenfield only: stack choice, scaffold, structure, theme tokens, API client, app shell | `shadcn-ui`, `playwright-cli` |
 | 2. Art direction | Pick a real direction instead of model defaults | `design-taste-frontend`, `high-end-visual-design`, `minimalist-ui`, `industrial-brutalist-ui`, `gpt-taste`, `brandkit` |
 | 3. Build | Components from theme tokens, all data states, responsive | `shadcn-ui`, `react-vite-dashboard`, `react-components` |
 | 4. Polish | Remove the "AI-generated" tells | `redesign-existing-projects` |
