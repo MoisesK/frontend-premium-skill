@@ -1,7 +1,7 @@
 ---
 name: frontend-premium
 description: >-
-  Master workflow for building market-grade frontends — premium, free of the "made by AI" look, accessible, and verified in a real browser. Orchestrates the installed design skills (taste-skill, web-design-guidelines, Google Stitch skills such as extract-design-md and shadcn-ui, and playwright-cli), telling you which one to use at each step. Use it WHENEVER you start, build, redesign, polish or review any frontend (landing page, website, dashboard, web app, screen, component) in any stack, and also when the user says "start the frontend", "build the UI", "make it look premium", "market-ready", "review my UI", "this looks AI-generated" (or in Portuguese: "começar o frontend", "fazer a interface", "deixar premium", "padrão de mercado", "revisar a UI", "tá com cara de IA"), or asks to install/set up the frontend skills kit.
+  Master workflow for building market-grade frontends — premium, free of the "made by AI" look, accessible, and verified in a real browser. Orchestrates the installed design skills (taste-skill, web-design-guidelines, Google Stitch skills such as extract-design-md and shadcn-ui, and playwright-cli), telling you which one to use at each step. Use it WHENEVER you start a new project from scratch, scaffold, build, redesign, polish or review any frontend (landing page, website, dashboard, web app, screen, component) in any stack, and also when the user says "start the frontend", "new project from scratch", "build the UI", "make it look premium", "market-ready", "review my UI", "this looks AI-generated" (or in Portuguese: "começar o frontend", "fazer a interface", "deixar premium", "padrão de mercado", "revisar a UI", "tá com cara de IA"), or asks to install/set up the frontend skills kit.
 ---
 
 # Frontend Premium — master workflow
@@ -38,6 +38,10 @@ Identify the type, because it changes which skills apply:
 | **Mobile** | iOS/Android app, React Native | `imagegen-frontend-mobile` (reference) + `react-native` |
 | **Review only** | "review my UI", "check accessibility" | jump to step 5 |
 
+Then check whether the project **exists**. No `package.json` / empty folder / "start from scratch"
+→ it is **greenfield**: do step 1b before anything else. Classification above still applies (it
+decides the stack in 1b).
+
 > `design-taste-frontend` explicitly states it is **not for dashboards or app screens**. Do not use
 > it in those cases.
 
@@ -50,6 +54,151 @@ Identify the type, because it changes which skills apply:
 3. For a greenfield project, create `DESIGN.md` at the end of step 2 (same structure: atmosphere,
    palette with hex and role, typography, components, layout).
 4. For large or multi-page scope, use `site-md` to capture requirements in a `SITE.md`.
+
+## Step 1b — Project foundation (greenfield only)
+
+Goal: a project that starts the same professional way every time, so every screen built later
+inherits correct tooling, structure, theming, data handling and accessibility. The foundation is
+**done before the first real screen** — never scaffold and build features in the same pass.
+
+### 1b.1 — Ask only what blocks
+
+Ask the user in ONE message, with a recommended answer for each, only for what you cannot infer:
+- Product name and one-line purpose.
+- Is there a **public site** (needs SEO), a **logged-in app**, or both?
+- Is there a **backend/API** already? Its base URL, auth style (cookie session, JWT/bearer, OAuth
+  provider) and whether it has an OpenAPI spec.
+- Language(s) and locale of the UI (e.g. `pt-BR` only, or i18n from day one).
+- Any mandatory brand assets (logo, colors, fonts) or a preferred stack.
+
+Everything else follows the defaults below. State the chosen defaults in one line; don't ask.
+
+### 1b.2 — Choose the stack
+
+| Situation | Default stack |
+|---|---|
+| Logged-in app / dashboard, separate backend, no SEO needs | **Vite + React + TypeScript + React Router** (SPA) |
+| Public site with SEO **and/or** app in the same codebase, or server rendering needed | **Next.js (App Router) + TypeScript** |
+| Content-heavy marketing site, little interactivity | **Astro** (+ React islands if needed) |
+| Mobile | Expo + React Native (follow `react-native`) |
+
+Always: TypeScript in `strict` mode, Tailwind CSS v4, shadcn/ui, pnpm (fall back to npm if pnpm is
+not installed), Node LTS ≥ 22. Respect the user's stack if they named one.
+
+### 1b.3 — Scaffold
+
+Use the shadcn CLI, which scaffolds the framework already wired with Tailwind and shadcn/ui:
+
+```bash
+npx shadcn@latest init -t vite      # or: -t next | -t astro | -t react-router | -t start
+```
+
+Run it in the target folder (it must be empty or only contain docs). If the CLI prompts for a base
+color/preset, pick neutral — the real palette comes from step 2. Then verify `dev`, `build` and
+`lint` run cleanly before adding anything.
+
+### 1b.4 — Baseline dependencies
+
+Install only what the classification needs; these are the defaults:
+
+| Concern | Default | Notes |
+|---|---|---|
+| Server state / data fetching | `@tanstack/react-query` | Never hand-roll fetch + `useEffect` caching |
+| Routing (Vite) | `react-router` | Next/Astro use their own router |
+| Forms + validation | `react-hook-form` + `zod` + `@hookform/resolvers` | Same zod schemas validate API responses |
+| Icons | `lucide-react` | No emoji as icons |
+| Toasts | `sonner` (via `npx shadcn@latest add sonner`) | |
+| Dates / numbers | native `Intl` (+ `date-fns` only if real date math is needed) | Locale from 1b.1 |
+| Fonts | `@fontsource-variable/*` (Vite/Astro) or `next/font` (Next) | Self-hosted; no Google Fonts `<link>` |
+| Tables (if data-heavy) | `@tanstack/react-table` via the shadcn data-table pattern | |
+| Charts (if needed) | shadcn `chart` (Recharts) | Follow the project's dataviz rules |
+
+Do not add a global state library (Redux, Zustand) up front. Server state lives in React Query, UI
+state stays local; add Zustand only when a real cross-tree client state appears.
+
+### 1b.5 — Tooling and quality gates
+
+- ESLint (from the template) + **Prettier** with `prettier-plugin-tailwindcss` (class sorting).
+- `tsconfig`: `strict: true`, `noUncheckedIndexedAccess: true`, path alias `@/*` → `src/*`.
+- Scripts in `package.json`: `dev`, `build`, `preview`/`start`, `lint`, `typecheck` (`tsc --noEmit`),
+  `format`, `test`.
+- Tests: **Vitest** + **Testing Library** for units/components; `playwright-cli` for visual checks
+  (step 6) and `@playwright/test` only when the user wants an e2e suite.
+- `.env.example` committed with every variable the app reads (e.g. `VITE_API_URL` /
+  `NEXT_PUBLIC_API_URL`); real `.env*` files in `.gitignore`. Env access goes through one typed module
+  (`src/lib/env.ts`, validated with zod) — never `import.meta.env.X` scattered around.
+- `.editorconfig`, `.nvmrc` with the Node version.
+
+### 1b.6 — Folder structure
+
+Feature-based, so the project scales without a giant `components/` dump (Vite shown; in Next.js the
+same folders live under `src/` next to `app/`):
+
+```
+src/
+  app/                 # app shell: providers, router, root layout, error boundary
+    providers.tsx      # QueryClientProvider, ThemeProvider, Toaster
+    router.tsx         # route table (Vite) — Next uses app/ directory routing
+  components/
+    ui/                # shadcn components (generated; compose, don't fork)
+    layout/            # AppShell, Sidebar, Topbar, PageHeader, EmptyState, ErrorState
+  features/
+    <feature>/         # e.g. auth, billing, users
+      api.ts           # query/mutation hooks for this feature
+      schemas.ts       # zod schemas + inferred types
+      components/      # feature-only components
+      pages/           # route-level screens
+  lib/
+    api-client.ts      # the ONLY place that calls fetch
+    env.ts             # typed, validated env
+    query-client.ts    # React Query defaults
+    format.ts          # Intl formatters (currency, date, number) for the app locale
+    utils.ts           # cn() from shadcn
+  styles/
+    globals.css        # Tailwind + theme tokens
+  hooks/               # cross-feature hooks only
+```
+
+Rules: features never import from other features' internals (share through `components/` or
+`lib/`); route-level components live in `pages/`; one component per file.
+
+### 1b.7 — Theme foundation
+
+- All design tokens are CSS variables in `globals.css` (colors with semantic names — `--background`,
+  `--foreground`, `--primary`, `--muted`, `--destructive`, `--border`, `--ring`, plus `--radius` and
+  font families), exposed to Tailwind through `@theme`. Components use only semantic classes
+  (`bg-primary`, `text-muted-foreground`), never raw hex or palette classes like `bg-blue-500`.
+- Wire the tokens now with neutral values; **step 2 decides the real values** and writes them both
+  to `globals.css` and `DESIGN.md`.
+- Decide dark mode now: either support it from day one (`.dark` token set + theme toggle) or
+  explicitly don't — retrofitting later is expensive.
+- Set the base type scale and font loading here so every screen inherits it.
+
+### 1b.8 — App shell and cross-cutting behavior
+
+Build these before any feature screen:
+- **Providers:** React Query (sensible defaults: `staleTime` ~30s, `retry: 1`, no refetch on window
+  focus for admin apps), theme, toaster.
+- **API client** (`lib/api-client.ts`): base URL from `env`, JSON handling, auth (credentials for
+  cookie sessions or bearer token injection), one normalized `ApiError` type, 401 → redirect to
+  login / session refresh. If the backend has an OpenAPI spec, generate types from it
+  (`openapi-typescript`) instead of writing them by hand.
+- **Routing:** layout routes (public vs. authenticated), protected-route guard, 404 page, error page
+  / error boundary per route, lazy-loaded route chunks.
+- **Shared states:** `PageSkeleton`, `EmptyState`, `ErrorState` components used by every data screen.
+- **Accessibility baseline:** `<html lang>` set to the UI locale, skip-to-content link, visible focus
+  ring from `--ring`, landmark elements (`header`, `nav`, `main`), page `<title>` per route.
+- **Public pages (Next/Astro):** metadata per page, Open Graph image, `robots`, `sitemap`, favicon set.
+
+### 1b.9 — Foundation done when
+
+- `dev`, `build`, `lint`, `typecheck` and `test` all pass with zero errors.
+- The app shell renders a placeholder home and the 404 page, verified with `playwright-cli` at 375 and
+  1440 px (no horizontal scroll, focus ring visible on Tab).
+- `README.md` documents: stack, how to run, scripts, env variables, folder structure.
+- Git initialized with a first commit (ask before pushing anywhere).
+
+Then continue to step 2 (art direction) and step 3 (screens).
 
 ## Step 2 — Art direction
 
@@ -134,6 +283,7 @@ The skills `generate-design`, `manage-design-system`, `code-to-design`, `upload-
 
 | Situation | Skill |
 |---|---|
+| New project from scratch (stack, scaffold, structure) | Step 1b + `shadcn-ui` |
 | Award-level landing/site | `design-taste-frontend` |
 | GSAP motion, pinned scroll | `gpt-taste` |
 | Premium app/dashboard | `high-end-visual-design` |
