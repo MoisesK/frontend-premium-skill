@@ -1,6 +1,7 @@
 ---
 name: frontend-premium
-description: Master workflow for building market-grade frontends — premium, free of the "made by AI" look, accessible, and verified in a real browser. Orchestrates the installed design skills (taste-skill, web-design-guidelines, Google Stitch skills such as extract-design-md and shadcn-ui, and playwright-cli), telling you which one to use at each step. Use it WHENEVER you start, build, redesign, polish or review any frontend (landing page, website, dashboard, web app, screen, component) in any stack, and also when the user says "start the frontend", "build the UI", "make it look premium", "market-ready", "review my UI", "this looks AI-generated" (or in Portuguese: "começar o frontend", "fazer a interface", "deixar premium", "padrão de mercado", "revisar a UI", "tá com cara de IA"), or asks to install/set up the frontend skills kit.
+description: >-
+  Master workflow for building market-grade frontends — premium, free of the "made by AI" look, accessible, and verified in a real browser. Orchestrates the installed design skills (taste-skill, web-design-guidelines, Google Stitch skills such as extract-design-md and shadcn-ui, and playwright-cli), telling you which one to use at each step. Use it WHENEVER you start, build, redesign, polish or review any frontend (landing page, website, dashboard, web app, screen, component) in any stack, and also when the user says "start the frontend", "build the UI", "make it look premium", "market-ready", "review my UI", "this looks AI-generated" (or in Portuguese: "começar o frontend", "fazer a interface", "deixar premium", "padrão de mercado", "revisar a UI", "tá com cara de IA"), or asks to install/set up the frontend skills kit.
 ---
 
 # Frontend Premium — master workflow
