@@ -26,6 +26,22 @@ cada etapa**.
 
 Em todo o fluxo: `full-output-enforcement` (sem código truncado nem placeholders).
 
+### Trilha iOS nativo (SwiftUI)
+
+Apps nativos de iPhone/iPad seguem uma trilha própria com os mesmos objetivos — as etapas web 1b–6
+não se aplicam:
+
+| Etapa | O que acontece | Skills usadas |
+|---|---|---|
+| Entender / fundação | Deployment target, Swift 6, pastas por feature, cores semânticas no Asset Catalog, serviço mock | — |
+| Direção de arte | Human Interface Guidelines da Apple, SF Symbols, Dynamic Type | `swiftui-pro` (referência de design), `imagegen-frontend-mobile` |
+| Construir | Fluxo de dados primeiro, `#Preview` por estado, checklist de correção | `swiftui-expert-skill` |
+| Revisar | API depreciada, fluxo de dados, navegação, acessibilidade, localização, desempenho | `swiftui-pro` |
+| Verificar | Screenshots no Simulator em iPhone e iPad, claro/escuro, maior tamanho de Dynamic Type; traces do Instruments | `xcrun simctl`, `swiftui-expert-skill` |
+
+Apps multiplataforma (iOS + Android num só código) usam Expo + React Native. Android nativo
+(Jetpack Compose) não é coberto.
+
 ## Instalação
 
 ```bash
@@ -39,7 +55,9 @@ O instalador coloca tudo em `~/.claude/skills/` (global, disponível em todos os
 - [taste-skill](https://github.com/Leonxlnx/taste-skill) (14 skills);
 - [web-design-guidelines](https://github.com/vercel-labs/agent-skills), da Vercel;
 - [Stitch skills](https://github.com/google-labs-code/stitch-skills), do Google (16 skills);
-- [playwright-cli](https://github.com/microsoft/playwright-cli), da Microsoft — skill, binário e Chromium.
+- [playwright-cli](https://github.com/microsoft/playwright-cli), da Microsoft — skill, binário e Chromium;
+- [SwiftUI Expert](https://github.com/AvdLee/SwiftUI-Agent-Skill), de Antoine van der Lee, e
+  [SwiftUI Pro](https://github.com/twostraws/swiftui-agent-skill), de Paul Hudson.
 
 Use `--force` para sobrescrever skills já instaladas. Abra uma nova sessão do Claude Code depois.
 
@@ -53,6 +71,7 @@ npx skills add MoisesK/frontend-premium-skill -g -a claude-code
 
 - **Node 22+** (os scripts da `design-taste-frontend` exigem), Git e npm
 - Chrome, Edge ou Chromium
+- Para a trilha iOS nativo: Xcode com um runtime do iOS Simulator
 - Opcional: MCP do Google Stitch + chave de API, para as skills do Stitch
 
 ## Uso

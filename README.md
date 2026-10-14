@@ -25,6 +25,21 @@ to use at each step**.
 
 Throughout: `full-output-enforcement` (no truncated code or placeholders).
 
+### Native iOS track (SwiftUI)
+
+Native iPhone/iPad apps follow their own track with the same goals — the web steps 1b–6 don't apply:
+
+| Step | What happens | Skills used |
+|---|---|---|
+| Understand / foundation | Deployment target, Swift 6, folders by feature, semantic colors in the Asset Catalog, mock service | — |
+| Art direction | Apple Human Interface Guidelines, SF Symbols, Dynamic Type | `swiftui-pro` (design reference), `imagegen-frontend-mobile` |
+| Build | Data flow first, `#Preview` per state, correctness checklist | `swiftui-expert-skill` |
+| Review | Deprecated API, data flow, navigation, accessibility, localization, performance | `swiftui-pro` |
+| Verify | Simulator screenshots on iPhone and iPad, light/dark, largest Dynamic Type; Instruments traces | `xcrun simctl`, `swiftui-expert-skill` |
+
+Cross-platform apps (iOS + Android from one codebase) use Expo + React Native. Native Android
+(Jetpack Compose) is not covered.
+
 ## Installation
 
 ```bash
@@ -38,7 +53,9 @@ The installer puts everything in `~/.claude/skills/` (global, available in every
 - [taste-skill](https://github.com/Leonxlnx/taste-skill) (14 skills);
 - [web-design-guidelines](https://github.com/vercel-labs/agent-skills) from Vercel;
 - [Stitch skills](https://github.com/google-labs-code/stitch-skills) from Google (16 skills);
-- [playwright-cli](https://github.com/microsoft/playwright-cli) from Microsoft — skill, CLI binary and Chromium.
+- [playwright-cli](https://github.com/microsoft/playwright-cli) from Microsoft — skill, CLI binary and Chromium;
+- [SwiftUI Expert](https://github.com/AvdLee/SwiftUI-Agent-Skill) by Antoine van der Lee and
+  [SwiftUI Pro](https://github.com/twostraws/swiftui-agent-skill) by Paul Hudson.
 
 Use `--force` to overwrite skills that are already installed. Start a new Claude Code session
 afterwards.
@@ -53,6 +70,7 @@ npx skills add MoisesK/frontend-premium-skill -g -a claude-code
 
 - **Node 22+** (the `design-taste-frontend` scripts need it), Git and npm
 - Chrome, Edge or Chromium
+- For the Native iOS track: Xcode with an iOS Simulator runtime
 - Optional: Google Stitch MCP server + API key, for the Stitch skills (generate screens, sync designs)
 
 ## Usage
@@ -72,6 +90,8 @@ downloaded from their original authors at install time:
 | [agent-skills](https://github.com/vercel-labs/agent-skills) (web-design-guidelines) | Vercel | see repository |
 | [stitch-skills](https://github.com/google-labs-code/stitch-skills) | Google | Apache-2.0 |
 | [playwright-cli](https://github.com/microsoft/playwright-cli) | Microsoft | Apache-2.0 |
+| [SwiftUI-Agent-Skill](https://github.com/AvdLee/SwiftUI-Agent-Skill) (swiftui-expert-skill) | Antoine van der Lee | MIT |
+| [swiftui-agent-skill](https://github.com/twostraws/swiftui-agent-skill) (swiftui-pro) | Paul Hudson | MIT |
 
 ## License
 
