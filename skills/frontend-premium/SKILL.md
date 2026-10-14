@@ -1,7 +1,7 @@
 ---
 name: frontend-premium
 description: >-
-  Master workflow for building market-grade frontends — premium, free of the "made by AI" look, accessible, and verified in a real browser. Orchestrates the installed design skills (taste-skill, web-design-guidelines, Google Stitch skills such as extract-design-md and shadcn-ui, and playwright-cli), telling you which one to use at each step. Use it WHENEVER you start a new project from scratch, scaffold, build, redesign, polish or review any frontend (landing page, website, dashboard, web app, screen, component) in any stack, and also when the user says "start the frontend", "new project from scratch", "build the UI", "make it look premium", "market-ready", "review my UI", "this looks AI-generated" (or in Portuguese: "começar o frontend", "fazer a interface", "deixar premium", "padrão de mercado", "revisar a UI", "tá com cara de IA"), or asks to install/set up the frontend skills kit.
+  Master workflow for building market-grade frontends — premium, free of the "made by AI" look, accessible, and verified in a real browser. Orchestrates the installed design skills (taste-skill, web-design-guidelines, Google Stitch skills such as extract-design-md and shadcn-ui, and playwright-cli), telling you which one to use at each step. Use it WHENEVER you start a new project from scratch, scaffold, build, redesign, polish or review any frontend (landing page, website, dashboard, web app, screen, component) in any stack — including native iOS apps in SwiftUI — and also when the user says "start the frontend", "new project from scratch", "build the UI", "make it look premium", "market-ready", "review my UI", "this looks AI-generated" (or in Portuguese: "começar o frontend", "fazer a interface", "deixar premium", "padrão de mercado", "revisar a UI", "tá com cara de IA"), when working on SwiftUI / iOS app screens ("app iOS", "tela em SwiftUI"), or asks to install/set up the frontend skills kit.
 ---
 
 # Frontend Premium — master workflow
@@ -22,7 +22,8 @@ continuing.
   missing fact blocks the work (product name, audience, mandatory brand).
 - **Don't reinvent what the project has.** Before creating a token, color, font or component, look in
   the code (Tailwind theme, CSS variables, `components/ui`, `DESIGN.md`).
-- **Nothing is "done" without a screenshot.** Step 6 (browser verification) is mandatory.
+- **Nothing is "done" without a screenshot.** Step 6 (browser verification) is mandatory — on the
+  Native iOS track, its Simulator verification step is.
 - **One aesthetic direction per project.** Do not mix `minimalist-ui` with `industrial-brutalist-ui`
   in the same interface; pick one and apply it consistently.
 
@@ -35,8 +36,14 @@ Identify the type, because it changes which skills apply:
 | **Public / marketing page** | landing, company site, product page, portfolio, hero | `design-taste-frontend` |
 | **App / dashboard / internal screen** | admin panel, CRUD, tables, forms, settings, logged-in area | `high-end-visual-design` + one style (`minimalist-ui` or `industrial-brutalist-ui`) + `shadcn-ui` |
 | **Redesign of something existing** | "improve this screen", "it's ugly", "it looks AI-made" | `redesign-existing-projects` (+ the skill for its type above) |
-| **Mobile** | iOS/Android app, React Native | `imagegen-frontend-mobile` (reference) + `react-native` |
+| **Native iOS (SwiftUI)** | iPhone/iPad app, Xcode project, `.swift` views | **Follow the "Native iOS track"** below: `swiftui-expert-skill` (build) + `swiftui-pro` (review) |
+| **Cross-platform mobile** | one codebase for iOS + Android, React Native, Expo | `imagegen-frontend-mobile` (reference) + `react-native` |
 | **Review only** | "review my UI", "check accessibility" | jump to step 5 |
+
+A project with an `.xcodeproj`/`Package.swift` and SwiftUI views is **Native iOS**: skip steps 1b–6
+(they are web-specific) and use the Native iOS track instead. Native Android (Kotlin/Jetpack Compose)
+is not covered by this kit — say so and, if the user wants both platforms from one codebase, propose
+Expo + React Native.
 
 Then check whether the project **exists**. No `package.json` / empty folder / "start from scratch"
 → it is **greenfield**: do step 1b before anything else. Classification above still applies (it
@@ -80,7 +87,8 @@ Everything else follows the defaults below. State the chosen defaults in one lin
 | Logged-in app / dashboard, separate backend, no SEO needs | **Vite + React + TypeScript + React Router** (SPA) |
 | Public site with SEO **and/or** app in the same codebase, or server rendering needed | **Next.js (App Router) + TypeScript** |
 | Content-heavy marketing site, little interactivity | **Astro** (+ React islands if needed) |
-| Mobile | Expo + React Native (follow `react-native`) |
+| Cross-platform mobile (iOS + Android) | Expo + React Native (follow `react-native`) |
+| Native iOS only | Xcode + SwiftUI — see "Native iOS track" (no Tailwind/shadcn/pnpm) |
 
 Always: TypeScript in `strict` mode, Tailwind CSS v4, shadcn/ui, pnpm (fall back to npm if pnpm is
 not installed), Node LTS ≥ 22. Respect the user's stack if they named one.
@@ -269,6 +277,78 @@ If no dev server is running, start it before this step.
 Tell the user: what was done, the chosen direction and why, what the review found and fixed, and what
 is still pending.
 
+## Native iOS track (SwiftUI)
+
+Same goals as the web workflow (real direction, documented design system, accessible, **seen running**
+before "done"), with the SwiftUI skills from the community:
+
+- **`swiftui-expert-skill`** (Antoine van der Lee) — the **builder**: data flow, view composition,
+  performance, lists, navigation, animation, layout, Instruments traces. Its Topic Router points to one
+  reference per subject; load only the ones the task touches.
+- **`swiftui-pro`** (Paul Hudson) — the **reviewer**: an ordered review (deprecated API → views → data
+  flow → navigation → HIG design → resizability → accessibility → localization → performance → Swift →
+  hygiene), findings by file with before/after fixes.
+
+### iOS rules (from both skills)
+
+- **Check the deployment target first.** Use newer APIs only when the target supports them or behind
+  `#available` with a sensible fallback. Never change the target on your own.
+- **Modern Swift**: Swift 6 strict concurrency, `@Observable` + `@State`/`@Bindable` (iOS 17+), no
+  `ObservableObject` in new code unless the target requires it.
+- **SwiftUI first**: no UIKit/AppKit bridging unless needed or requested; **no third-party
+  frameworks without asking**.
+- **One type per file**, folders by feature (same idea as `features/` on the web).
+- **Each `View` is an invalidation boundary**: give it only the data it reads; extract subviews early.
+- **Don't impose an architecture** (MVVM, TCA, VIPER); keep business logic out of views for testability.
+- **Hard-deprecated API → replace. Soft-deprecated → flag only**, unless the user asked for a migration.
+  During feature work, list unrelated modernization separately instead of applying it.
+- **Liquid Glass only when the user asks for it.**
+- Performance optimizations are suggestions, not requirements — unless a trace proves the problem.
+
+### iOS steps
+
+1. **Understand** — read the deployment target, Swift version, folder structure, Asset Catalog
+   (colors, images) and any existing design. No `DESIGN.md`? Write one from the code (palette as named
+   colors with light/dark values, type scale using Dynamic Type text styles, spacing, corner radius,
+   SF Symbols in use).
+2. **Foundation (greenfield)** — Xcode project with the latest stable iOS as target (unless the user
+   needs older), Swift 6, folders by feature (`Features/<Name>/Views`, `Models`, `Services`),
+   `DesignSystem/` with semantic colors from the Asset Catalog (`Color("Surface")`, never literal RGB in
+   views), a networking layer (`URLSession` + `Codable` + `async/await`, one error type) and a mock
+   service so every screen runs offline. Lint with `swift-format` if the project uses it.
+3. **Art direction** — Apple HIG, not web patterns: native navigation (`NavigationStack`,
+   `NavigationSplitView` on iPad/large displays, `TabView`), system materials, SF Symbols, Dynamic Type
+   text styles instead of fixed point sizes. Use `swiftui-pro`'s `references/design.md` and
+   `imagegen-frontend-mobile` for a visual reference if an image tool is available. The anti-"AI look"
+   checklist of step 4 still applies (no gradient blobs, cards inside cards, emoji as icons).
+4. **Build** — follow `swiftui-expert-skill`'s "Implement new SwiftUI feature" workflow: design data
+   flow first (owned vs injected state), `Button` for everything tappable, accessibility labels and
+   grouping, stable `ForEach` identity. Every screen has loading, empty, error and success states and a
+   `#Preview` per state with self-contained mock data. Pass its **Correctness Checklist** before moving
+   on (private `@State`, `.animation(_:value:)` with `value`, no `.indices` in `ForEach`, …).
+5. **Review** — run `swiftui-pro` on the changed files (replaces `web-design-guidelines`). Fix every
+   accessibility finding (VoiceOver labels, Dynamic Type, Reduce Motion, contrast) and every
+   deprecated API; list purely stylistic findings for the user.
+6. **Simulator verification (mandatory)** — build and look at it running:
+
+   ```bash
+   xcrun simctl list devices available                      # pick an iPhone and an iPad
+   xcodebuild -scheme <App> -destination 'platform=iOS Simulator,name=<iPhone>' build
+   xcrun simctl boot "<iPhone>" && open -a Simulator
+   xcrun simctl install booted <path/to/App.app> && xcrun simctl launch booted <bundle.id>
+   xcrun simctl io booted screenshot iphone-light.png
+   xcrun simctl ui booted appearance dark && xcrun simctl io booted screenshot iphone-dark.png
+   xcrun simctl ui booted content_size accessibility-extra-extra-extra-large \
+     && xcrun simctl io booted screenshot iphone-xxxl.png
+   ```
+
+   Repeat on an iPad (and landscape / split view when the app supports it). Look for clipped or
+   truncated text at large Dynamic Type sizes, safe-area problems, broken dark mode and layouts that
+   don't adapt. Run the unit tests (`xcodebuild test`). For performance complaints, record and analyse
+   an Instruments trace with `swiftui-expert-skill` (SwiftUI template on a real device or the Mac; Time
+   Profiler on the Simulator).
+7. **Delivery** — same as step 7, plus the deployment target used and any `#available` fallbacks.
+
 ## Google Stitch integration (optional)
 
 The skills `generate-design`, `manage-design-system`, `code-to-design`, `upload-to-stitch`,
@@ -296,6 +376,10 @@ The skills `generate-design`, `manage-design-system`, `code-to-design`, `upload-
 | shadcn components | `shadcn-ui` |
 | a11y/UX review | `web-design-guidelines` |
 | Test/see it in the browser | `playwright-cli` |
+| SwiftUI screen / iOS feature (build) | `swiftui-expert-skill` |
+| SwiftUI code review | `swiftui-pro` |
+| SwiftUI performance / Instruments trace | `swiftui-expert-skill` (trace workflow) |
+| Cross-platform mobile app | Expo + `react-native` |
 | Visual reference via images | `imagegen-frontend-web`, `imagegen-frontend-mobile`, `image-to-code` |
 | Visual identity | `brandkit` |
 | Improve a UI prompt | `enhance-prompt` |
@@ -322,7 +406,12 @@ The script installs, globally (`~/.claude/skills/`):
    `plugins/*/skills/*` into `~/.claude/skills/`.
 4. **playwright-cli** (Microsoft) — copies `skills/playwright-cli` from `microsoft/playwright-cli`
    and installs the binary with `npm install -g @playwright/cli@latest`, plus Playwright's Chromium.
+5. **SwiftUI skills** —
+   `npx skills add https://github.com/avdlee/swiftui-agent-skill --skill swiftui-expert-skill -g -a claude-code -y`
+   (Antoine van der Lee) and
+   `npx skills add https://github.com/twostraws/swiftui-agent-skill --skill swiftui-pro -g -a claude-code -y`
+   (Paul Hudson).
 
 Requirements: **Node 22+** (the `design-taste-frontend` scripts need it; the installer warns if
 older), Git, npm, and Chrome/Edge/Chromium. Optional: a Stitch API key + Stitch MCP for the Stitch
-skills. Start a new Claude Code session after installing so the skills are loaded.
+skills; Xcode (with an iOS Simulator runtime) for the Native iOS track. Start a new Claude Code session after installing so the skills are loaded.
